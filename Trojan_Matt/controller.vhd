@@ -23,7 +23,8 @@ entity controller is
 		rst : in std_logic;
 		rconst : out std_logic_vector(7 downto 0);
 		is_final_round : out std_logic;
-		done : out std_logic
+		done : out std_logic;
+		control_done : out std_logic
 	);
 end controller;
 
@@ -61,4 +62,5 @@ begin
 	rconst <= reg_output;
 	is_final_round <= '1' when reg_output = x"36" else '0';
 	done <= '1' when reg_output = x"6c" else '0';
+	control_done <= '1' when reg_output = x"6c" else '0';
 end architecture behavioral;

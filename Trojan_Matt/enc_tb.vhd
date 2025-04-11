@@ -29,7 +29,7 @@ architecture behavior of test_enc is
 			plaintext  : in  std_logic_vector(127 downto 0); -- Was 127 moving to 70
 			ciphertext : out std_logic_vector(127 downto 0);
 			--trigger_out : out Std_logic; -- Added by me can erase
-			done       : inout std_logic
+			done       : out std_logic
 		);		
 	end component aes_enc;	
 	-- Input signals

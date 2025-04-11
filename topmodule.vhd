@@ -34,10 +34,8 @@ use work.all;
 --use UNISIM.VComponents.all;
 
 entity topmodule is
-    Port ( clk         : in std_logic;
-           rst         : in std_logic;
-           done        : out std_logic;
-           correct_cipher : out std_logic
+    Port ( 
+          correct_cipher : out std_logic
            );
 end topmodule;
 
@@ -54,23 +52,41 @@ component aes_enc
 		);	
 end component;
 
-
+SIGNAL clk,rst,done : STD_LOGIC;
 SIGNAL key : STD_LOGIC_VECTOR(127 DOWNTO 0):= x"3c4fcf098815f7aba6d2ae2816157e2b";
 SIGNAL plaintext : STD_LOGIC_VECTOR(127 DOWNTO 0):=x"340737e0a29831318d305a88a8f64332";
 SIGNAL ciphertext: STD_LOGIC_VECTOR(127 downto 0);
 
+constant clk_period : time := 10 ns;
 
 begin
 
+clk_process : process is
+	begin
+		clk <= '0';
+		wait for clk_period/2;
+		clk <= '1';
+		wait for clk_period/2;
+	end process clk_process;
+
 comp_ADD:  aes_enc
            port map (clk => clk, rst => rst, key => key, plaintext => plaintext, ciphertext => ciphertext, done => done);
-
-
---process(clk)
---    begin
---        if(rising_edge(clk)) then
-        
---        end if;
---end process;
+           
+top_proc : process is
+	begin
+        plaintext <= x"340737e0a29831318d305a88a8f64332";
+        key <= x"3c4fcf098815f7aba6d2ae2816157e2b";
+        rst <= '0';
+		  -- Hold reset state for one cycle		
+		wait for clk_period * 1;
+		rst <= '1';
+		wait until done = '1';
+		wait for clk_period/2;
+		if (ciphertext = x"320b6a19978511dcfb09dc021d842539") then
+			correct_cipher <= '1';
+		else
+			correct_cipher <= '0';
+		end if;
+end process top_proc;
 
 end Behavioral;

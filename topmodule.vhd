@@ -35,7 +35,11 @@ use work.all;
 
 entity topmodule is
     Port ( 
-          correct_cipher : out std_logic
+          clk : in std_logic;
+          correct_cipher : out std_logic; -- High if ciphertext is correct
+          started: out std_logic; -- High if AES was told to start...
+          clock_led : out std_logic;
+          finished : out std_logic -- High if done rose at least once
            );
 end topmodule;
 
@@ -52,41 +56,59 @@ component aes_enc
 		);	
 end component;
 
-SIGNAL clk,rst,done : STD_LOGIC;
-SIGNAL key : STD_LOGIC_VECTOR(127 DOWNTO 0):= x"3c4fcf098815f7aba6d2ae2816157e2b";
-SIGNAL plaintext : STD_LOGIC_VECTOR(127 DOWNTO 0):=x"340737e0a29831318d305a88a8f64332";
+SIGNAL rst,done : STD_LOGIC;
+SIGNAL key : STD_LOGIC_VECTOR(127 DOWNTO 0);
+SIGNAL plaintext : STD_LOGIC_VECTOR(127 DOWNTO 0);
 SIGNAL ciphertext: STD_LOGIC_VECTOR(127 downto 0);
+SIGNAL started_signal, correct_cipher_signal, finished_signal : STD_LOGIC;
 
-constant clk_period : time := 10 ns;
+constant clk_period : time := 0.01 ms;
 
 begin
+clock_led <= clk;
+started <= started_signal;
 
-clk_process : process is
-	begin
-		clk <= '0';
-		wait for clk_period/2;
-		clk <= '1';
-		wait for clk_period/2;
-	end process clk_process;
+
+finished <= finished_signal;
+correct_cipher <= correct_cipher_signal;
+
+
+plaintext <= x"340737e0a29831318d305a88a8f64332";
+key <= x"3c4fcf098815f7aba6d2ae2816157e2b";
 
 comp_ADD:  aes_enc
            port map (clk => clk, rst => rst, key => key, plaintext => plaintext, ciphertext => ciphertext, done => done);
            
-top_proc : process is
+top_proc : process(clk)
 	begin
-        plaintext <= x"340737e0a29831318d305a88a8f64332";
-        key <= x"3c4fcf098815f7aba6d2ae2816157e2b";
-        rst <= '0';
-		  -- Hold reset state for one cycle		
-		wait for clk_period * 1;
-		rst <= '1';
-		wait until done = '1';
-		wait for clk_period/2;
-		if (ciphertext = x"320b6a19978511dcfb09dc021d842539") then
-			correct_cipher <= '1';
-		else
-			correct_cipher <= '0';
-		end if;
+	   if (clk = '1') then
+	       if (done = '1') then
+	           finished_signal <= '1';
+	           if (ciphertext = x"320b6a19978511dcfb09dc021d842539") then
+	               correct_cipher_signal <= '1';
+	           end if;
+	       end if;	       
+	   else
+	       -- If reset is low go high
+	       if (rst = '0') then
+	           started_signal <= '1';
+	           rst <= '1';
+	       end if;
+	       
+	       -- if done then set reset is low
+	       if (done = '1') then
+	           rst <= '0';
+	       end if;    
+	       if (done = '1') then
+	           finished_signal <= '1';
+	           if (ciphertext = x"320b6a19978511dcfb09dc021d842539") then
+	               correct_cipher_signal <= '1';
+	           end if;
+	       end if;	  
+	   end if;
+	   
 end process top_proc;
+
+
 
 end Behavioral;

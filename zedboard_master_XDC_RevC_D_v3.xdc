@@ -172,7 +172,7 @@ set_property PACKAGE_PIN W17  [get_ports {HD_VSYNC}];  # "HD-VSYNC"
 # ----------------------------------------------------------------------------
 # User LEDs - Bank 33
 # ---------------------------------------------------------------------------- 
-set_property PACKAGE_PIN T22 [get_ports {LD0}];  # "LD0"
+set_property PACKAGE_PIN T22 [get_ports {correct_cipher}];  # "LD0"
 set_property PACKAGE_PIN T21 [get_ports {LD1}];  # "LD1"
 set_property PACKAGE_PIN U22 [get_ports {LD2}];  # "LD2"
 set_property PACKAGE_PIN U21 [get_ports {LD3}];  # "LD3"

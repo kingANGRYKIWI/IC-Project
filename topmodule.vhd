@@ -39,7 +39,8 @@ entity topmodule is
           correct_cipher : out std_logic; -- High if ciphertext is correct
           started: out std_logic; -- High if AES was told to start...
           clock_led : out std_logic;
-          finished : out std_logic -- High if done rose at least once
+          finished : out std_logic; -- High if done rose at least once
+          reset_out : out std_logic -- Checking to see if rst changes at all
            );
 end topmodule;
 
@@ -56,20 +57,23 @@ component aes_enc
 		);	
 end component;
 
-SIGNAL rst,done : STD_LOGIC;
+SIGNAL rst : STD_LOGIC := '0';
+SIGNAL done : STD_LOGIC;
 SIGNAL key : STD_LOGIC_VECTOR(127 DOWNTO 0);
 SIGNAL plaintext : STD_LOGIC_VECTOR(127 DOWNTO 0);
 SIGNAL ciphertext: STD_LOGIC_VECTOR(127 downto 0);
-SIGNAL started_signal, correct_cipher_signal, finished_signal : STD_LOGIC;
-
+SIGNAL correct_cipher_signal : STD_LOGIC := '0';
+SIGNAL started_signal : STD_LOGIC := '0';
 constant clk_period : time := 0.01 ms;
 
 begin
 clock_led <= clk;
 started <= started_signal;
 
+reset_out <= rst;
 
-finished <= finished_signal;
+
+finished <= done;
 correct_cipher <= correct_cipher_signal;
 
 
@@ -81,14 +85,15 @@ comp_ADD:  aes_enc
            
 top_proc : process(clk)
 	begin
-	   if (clk = '1') then
+	   --if (clk = '0') then
+	   if (falling_edge(clk)) then
 	       if (done = '1') then
-	           finished_signal <= '1';
 	           if (ciphertext = x"320b6a19978511dcfb09dc021d842539") then
 	               correct_cipher_signal <= '1';
 	           end if;
-	       end if;	       
-	   else
+	       end if;
+	       end if;
+	   if (rising_edge(clk)) then	       
 	       -- If reset is low go high
 	       if (rst = '0') then
 	           started_signal <= '1';
@@ -99,12 +104,6 @@ top_proc : process(clk)
 	       if (done = '1') then
 	           rst <= '0';
 	       end if;    
-	       if (done = '1') then
-	           finished_signal <= '1';
-	           if (ciphertext = x"320b6a19978511dcfb09dc021d842539") then
-	               correct_cipher_signal <= '1';
-	           end if;
-	       end if;	  
 	   end if;
 	   
 end process top_proc;

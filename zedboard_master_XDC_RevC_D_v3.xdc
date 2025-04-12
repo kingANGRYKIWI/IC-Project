@@ -80,6 +80,7 @@ set_property PACKAGE_PIN AB5 [get_ports {AC_SDA}];  # "AC-SDA"
 # Clock Source - Bank 13
 # ---------------------------------------------------------------------------- 
 set_property PACKAGE_PIN Y9 [get_ports {clk}];  # "GCLK"
+create_clock -period 100.000 -name clk [get_ports clk]
 #create_clock -period 100.000 -name CLK -waveform {0.000 50.000} [get_ports clk]
 
 # ----------------------------------------------------------------------------
@@ -177,7 +178,7 @@ set_property PACKAGE_PIN T22 [get_ports {finished}];  # "LD0"
 set_property PACKAGE_PIN T21 [get_ports {LD1}];  # "LD1"
 set_property PACKAGE_PIN U22 [get_ports {started}];  # "LD2"
 set_property PACKAGE_PIN U21 [get_ports {LD3}];  # "LD3"
-set_property PACKAGE_PIN V22 [get_ports {LD4}];  # "LD4"
+set_property PACKAGE_PIN V22 [get_ports {reset_out}];  # "LD4"
 set_property PACKAGE_PIN W22 [get_ports {correct_cipher}];  # "LD5"
 set_property PACKAGE_PIN U19 [get_ports {LD6}];  # "LD6"
 set_property PACKAGE_PIN U14 [get_ports {clock_led}];  # "LD7"

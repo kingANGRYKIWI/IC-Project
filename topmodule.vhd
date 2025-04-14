@@ -40,7 +40,10 @@ entity topmodule is
           started: out std_logic; -- High if AES was told to start...
           clock_led : out std_logic;
           finished : out std_logic; -- High if done rose at least once
-          reset_out : out std_logic -- Checking to see if rst changes at all
+          reset_out : out std_logic; -- Checking to see if rst changes at all
+          clk_port : out std_logic;
+          rst_port : out std_logic;
+          done_port : out std_logic
            );
 end topmodule;
 
@@ -68,12 +71,15 @@ constant clk_period : time := 0.01 ms;
 
 begin
 clock_led <= clk;
+clk_port <= clk;
 started <= started_signal;
 
 reset_out <= rst;
+rst_port <= rst;
 
 
 finished <= done;
+done_port <= done;
 correct_cipher <= correct_cipher_signal;
 
 
@@ -90,6 +96,8 @@ top_proc : process(clk)
 	       if (done = '1') then
 	           if (ciphertext = x"320b6a19978511dcfb09dc021d842539") then
 	               correct_cipher_signal <= '1';
+	           else
+	               correct_cipher_signal <= '0';
 	           end if;
 	       end if;
 	       end if;

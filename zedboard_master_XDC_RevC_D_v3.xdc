@@ -1,4 +1,4 @@
-# ----------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------
 #     _____
 #    /     \
 #   /____   \____
@@ -86,14 +86,14 @@ create_clock -period 100.000 -name clk [get_ports clk]
 # ----------------------------------------------------------------------------
 # JA Pmod - Bank 13
 # ---------------------------------------------------------------------------- 
-set_property PACKAGE_PIN Y11  [get_ports {JA1}];  # "JA1"
+set_property PACKAGE_PIN Y11  [get_ports {clk_port}];  # "JA1"
 set_property PACKAGE_PIN AA8  [get_ports {JA10}];  # "JA10"
-set_property PACKAGE_PIN AA11 [get_ports {JA2}];  # "JA2"
-set_property PACKAGE_PIN Y10  [get_ports {JA3}];  # "JA3"
+set_property PACKAGE_PIN AA11 [get_ports {rst_port}];  # "JA2"
+set_property PACKAGE_PIN Y10  [get_ports {done_port}];  # "JA3"
 set_property PACKAGE_PIN AA9  [get_ports {JA4}];  # "JA4"
-set_property PACKAGE_PIN AB11 [get_ports {JA7}];  # "JA7"
-set_property PACKAGE_PIN AB10 [get_ports {JA8}];  # "JA8"
-set_property PACKAGE_PIN AB9  [get_ports {JA9}];  # "JA9"
+set_property PACKAGE_PIN AB11 [get_ports {clk_port}];  # "JA7"
+set_property PACKAGE_PIN AB10 [get_ports {rst_port}];  # "JA8"
+set_property PACKAGE_PIN AB9  [get_ports {done_port}];  # "JA9"
 
 
 # ----------------------------------------------------------------------------

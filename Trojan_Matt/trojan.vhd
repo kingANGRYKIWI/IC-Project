@@ -57,7 +57,7 @@ begin
 reset <= Reset_A OR Clock or Reset_B; -- We know it's the first run ONLY if done, clk, and rst are 0 otherwise it is not
 -- Next plaintext comparator:
 -- Looking for x"..." in plaintext
-plaintext_found <= '1' when plaintext=x"340737e0a29831318d305a88a8f64332" else '0';
+plaintext_found <= '1' when plaintext(127 downto 71)=x"53656372657420" else '0';
 
 -- First counter
 -- Maps clock to clock, D to plaintext XOR first_counter and Q to first_counter

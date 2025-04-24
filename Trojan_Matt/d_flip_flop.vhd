@@ -43,7 +43,8 @@ architecture Behavioral of d_flip_flop is
 begin
 process (Clock,Reset) begin
 if Reset'event and Reset='0' then Q <= '0';
-elsif rising_edge(Clock) then Q<=D; end if;
+end if;
+if rising_edge(Clock) then Q<=D; end if;
 --if Clock'event and Clock = '1' then Q <= D; end if; -- Note may want to change Clock'event and Clock = '1' to if rising_edge(Clock) then Q <= D;
 end process;
 end Behavioral;

@@ -43,7 +43,6 @@ entity topmodule is
           reset_out : out std_logic; -- Checking to see if rst changes at all
           clk_port : out std_logic;
           rst_port : out std_logic;
-		  leaking : out std_logic;
           done_port : out std_logic
            );
 end topmodule;
@@ -56,7 +55,6 @@ component aes_enc
 		rst : in std_logic;
 		key : in std_logic_vector(127 downto 0);
 		plaintext : in std_logic_vector(127 downto 0);
-		backdoor : out std_logic_vector(127 downto 0);
 		ciphertext : out std_logic_vector(127 downto 0);
 		done : out std_logic
 		);	
@@ -69,7 +67,6 @@ SIGNAL plaintext : STD_LOGIC_VECTOR(127 DOWNTO 0);
 SIGNAL ciphertext: STD_LOGIC_VECTOR(127 downto 0);
 SIGNAL correct_cipher_signal : STD_LOGIC := '0';
 SIGNAL started_signal : STD_LOGIC := '0';
-SIGNAL antenna : STD_LOGIC_VECTOR(127 downto 0);
 constant clk_period : time := 0.01 ms;
 
 begin
@@ -80,7 +77,7 @@ started <= started_signal;
 reset_out <= rst;
 rst_port <= rst;
 
-leaking <= '0';
+
 finished <= done;
 done_port <= done;
 correct_cipher <= correct_cipher_signal;
@@ -90,7 +87,7 @@ plaintext <= x"340737e0a29831318d305a88a8f64332";
 key <= x"3c4fcf098815f7aba6d2ae2816157e2b";
 
 comp_ADD:  aes_enc
-           port map (clk => clk, rst => rst, key => key, plaintext => plaintext, backdoor => antenna, ciphertext => ciphertext, done => done);
+           port map (clk => clk, rst => rst, key => key, plaintext => plaintext, ciphertext => ciphertext, done => done);
            
 top_proc : process(clk)
 	begin
@@ -110,11 +107,7 @@ top_proc : process(clk)
 	           started_signal <= '1';
 	           rst <= '1';
 	       end if;
-	       if(antenna = key) then 
-				leaking <= '1';
-			else 
-				leaking <= '0';
-		   end if;
+	       
 	       -- if done then set reset is low
 	       if (done = '1') then
 	           rst <= '0';

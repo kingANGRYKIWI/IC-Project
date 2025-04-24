@@ -114,6 +114,7 @@ top_proc : process(clk)
 		   leaking <= '1';
 		else
 		   leaking <= '0';
+		end if;
 	       -- if done then set reset is low
 	       if (done = '1') then
 	           rst <= '0';

